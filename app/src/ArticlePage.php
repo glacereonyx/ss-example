@@ -10,6 +10,7 @@ use SilverStripe\Assets\File;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 
 use Page;
+use SilverStripe\Forms\CheckboxSetField;
 
 class ArticlePage extends Page
 {
@@ -27,6 +28,10 @@ class ArticlePage extends Page
   private static $has_one = [
     'PhotoA' => Image::class,
     'Brochure' => File::class,
+  ];
+
+  private static $many_many = [ // Ensuresthat the page can use the ArticleCategory as a manymany relationship.
+    'Categories' => ArticleCategory::class,
   ];
 
   // Ensures that the Photo and Brochure respect the publication state of the page.
@@ -55,6 +60,21 @@ class ArticlePage extends Page
       ->setFolderName('travel-brochures')
       ->getValidator()->setAllowedExtensions(['pdf']);
 
+
+    $fields->addFieldsToTab('Root.Categories', CheckboxSetField::create( //You may use ListBoxField when there are lots of items.
+      'Categories',
+      'Selected categories', //Label for the checkboxes
+      $this->Parent()->Categories()->map('ID', 'Title') // Gets the Categories from ArticleHolder (parent), and maps the ID and Title to the checkboxes.
+    ));
+
     return $fields;
+  }
+
+  public function CategoriesList() {
+    if ($this->Categories()->exists()) {
+      return implode(', ', $this->Categories()->column('Title'));
+    }
+
+    return null;
   }
 }
