@@ -30,6 +30,10 @@ class ArticlePage extends Page
     'Brochure' => File::class,
   ];
 
+  private static $has_many = [ // DO not forget this
+    'Comments' => ArticleComment::class,
+  ];
+
   private static $many_many = [ // Ensuresthat the page can use the ArticleCategory as a manymany relationship.
     'Categories' => ArticleCategory::class,
   ];
@@ -70,7 +74,8 @@ class ArticlePage extends Page
     return $fields;
   }
 
-  public function CategoriesList() {
+  public function CategoriesList()
+  {
     if ($this->Categories()->exists()) {
       return implode(', ', $this->Categories()->column('Title'));
     }
