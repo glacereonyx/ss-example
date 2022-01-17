@@ -5,8 +5,9 @@ namespace SilverStripe\Lessons;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Assets\Image;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TextareaField;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Versioned\Versioned;
 
@@ -16,7 +17,7 @@ class Region extends DataObject
   private static $table_name = 'Region';
   private static $db = [
     'Title' => 'Varchar',
-    'Description' => 'Text',
+    'Description' => 'HTMLText',
   ];
 
   private static $has_one = [
@@ -55,7 +56,7 @@ class Region extends DataObject
   {
     $fields = FieldList::create(
       TextField::create('Title'),
-      TextareaField::create('Description'),
+      HTMLEditorField::create('Description'),
       $uploader = UploadField::create('Photo')
     );
 
@@ -63,5 +64,19 @@ class Region extends DataObject
     $uploader->getValidator()->setAllowedExtensions(['png', 'gif', 'jpeg', 'jpg']);
 
     return $fields;
+  }
+
+  // Generates a unique URL to show on linked regions.
+  // Region pages are generated within the RegionsPageController
+  public function Link()
+  {
+    return $this->RegionsPage()->Link('show/' . $this->ID);
+  }
+
+  // Generates the active class for a link
+  public function LinkingMode()
+  {
+    // Gets the currently active controller
+    return Controller::curr()->getRequest()->param('ID') == $this->ID ? 'current' : 'link';
   }
 }
