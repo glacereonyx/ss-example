@@ -66,9 +66,18 @@ class PropertySearchPageController extends PageController
     // Sets the amount of page numbers shown surrounding the pagination.
     // $paginatedProperties->PaginationSummary(1);
 
-    return [
+    $data = [
       'Results' => $paginatedProperties,
     ];
+
+    // If the page is requested by ajax, return a template partial
+    // Also, pass the paginated properties to the partial
+    if ($request->isAjax()) {
+      return $this->customise($data)
+        ->renderWith('SilverStripe/Lessons/Includes/PropertySearchResults');
+    }
+
+    return $data;
   }
   public function PropertySearchForm()
   {
