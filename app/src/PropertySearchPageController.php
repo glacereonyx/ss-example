@@ -10,12 +10,13 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\ORM\ArrayLib;
+use SilverStripe\ORM\PaginatedList;
 
 class PropertySearchPageController extends PageController
 {
   public function index(HTTPRequest $request)
   {
-    $properties = Property::get()->limit(20);
+    $properties = Property::get();
 
     // Filter based on keywords
     if ($search = $request->getVar('Keywords')) {
@@ -54,9 +55,19 @@ class PropertySearchPageController extends PageController
       }
     }
 
+    // Adds pagintation support to the filtered properties
+    // Remember, the SQL query is lazy loaded, meaning it does not run until the page requests the data.
+    $paginatedProperties = PaginatedList::create(
+      $properties,
+      $request
+    )
+      ->setPageLength(1)
+      ->setPaginationGetVar('s');
+    // Sets the amount of page numbers shown surrounding the pagination.
+    // $paginatedProperties->PaginationSummary(1);
 
     return [
-      'Results' => $properties,
+      'Results' => $paginatedProperties,
     ];
   }
   public function PropertySearchForm()
