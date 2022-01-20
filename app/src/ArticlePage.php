@@ -11,6 +11,7 @@ use SilverStripe\AssetAdmin\Forms\UploadField;
 
 use Page;
 use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\DropdownField;
 
 class ArticlePage extends Page
 {
@@ -28,6 +29,7 @@ class ArticlePage extends Page
   private static $has_one = [
     'PhotoA' => Image::class,
     'Brochure' => File::class,
+    'Region' => Region::class,
   ];
 
   private static $has_many = [ // DO not forget this
@@ -70,6 +72,12 @@ class ArticlePage extends Page
       'Selected categories', //Label for the checkboxes
       $this->Parent()->Categories()->map('ID', 'Title') // Gets the Categories from ArticleHolder (parent), and maps the ID and Title to the checkboxes.
     ));
+
+    $fields->addFieldToTab('Root.Main', DropdownField::create(
+      'RegionID',
+      'Region',
+      Region::get()->map('ID', 'Title')
+    )->setEmptyString('-- None --'), 'Content');
 
     return $fields;
   }

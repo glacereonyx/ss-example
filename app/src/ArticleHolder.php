@@ -1,4 +1,5 @@
 <?php
+
 namespace SilverStripe\Lessons;
 
 use Page;
@@ -15,6 +16,14 @@ class ArticleHolder extends Page
     ArticlePage::class
   ];
 
+  public function Regions()
+  {
+    $page = RegionsPage::get()->first();
+
+    if ($page) {
+      return $page->Regions();
+    }
+  }
 
   public function getCMSFields()
   {

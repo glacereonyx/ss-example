@@ -19,13 +19,20 @@ class ArticleCategory extends DataObject
   ];
 
   private static $belongs_many_many = [ // Not required but will provide a method that allows us to get a list of all parents (all article pages that have this category)
-    'Articles' => ArticlePage::class, 
+    'Articles' => ArticlePage::class,
   ];
 
   public function getCMSFields()
   {
     return FieldList::create(
       TextField::create('Title')
+    );
+  }
+
+  public function Link()
+  {
+    return $this->ArticleHolder()->Link(
+      'category/' . $this->ID
     );
   }
 }

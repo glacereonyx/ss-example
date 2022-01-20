@@ -25,6 +25,10 @@ class Region extends DataObject
     'RegionsPage' => RegionsPage::class,
   ];
 
+  private static $has_many = [
+    'Articles' => ArticlePage::class,
+  ];
+
   private static $owns = [
     'Photo',
   ];
@@ -71,6 +75,15 @@ class Region extends DataObject
   public function Link()
   {
     return $this->RegionsPage()->Link('show/' . $this->ID);
+  }
+
+  public function ArticlesLink()
+  {
+    $page = ArticleHolder::get()->first();
+
+    if ($page) {
+      return $page->Link('region/' . $this->ID);
+    }
   }
 
   // Generates the active class for a link
